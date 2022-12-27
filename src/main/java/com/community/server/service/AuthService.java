@@ -10,6 +10,9 @@ import com.community.server.repository.RoleRepository;
 import com.community.server.repository.UserRepository;
 import com.community.server.security.JwtAuthenticationResponse;
 import com.community.server.security.JwtTokenProvider;
+import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +23,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 
 @Service
 public class AuthService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -40,13 +49,13 @@ public class AuthService {
     @Autowired
     private JwtTokenProvider tokenProvider;
 
-    public ResponseEntity<?> create(SignUpBody signUpBody){
-
-        if(signUpBody.getUsername() == null || signUpBody.getEmail() == null || signUpBody.getName() == null || signUpBody.getPassword() == null){
+    @SneakyThrows
+    public ResponseEntity<?> create(SignUpBody signUpBody) {
+        if (signUpBody.getUsername() == null || signUpBody.getEmail() == null || signUpBody.getName() == null || signUpBody.getPassword() == null) {
             return new ResponseEntity<>("Auth options are not specified.", HttpStatus.BAD_GATEWAY);
         }
 
-        if(!signUpBody.getUsername().matches("^[a-zA-Z\\d]+$")) {
+        if (!signUpBody.getUsername().matches("^[a-zA-Z\\d]+$")) {
             return new ResponseEntity<>("Invalid username!", HttpStatus.BAD_REQUEST);
         }
 
@@ -58,7 +67,7 @@ public class AuthService {
             return new ResponseEntity<>("Email Address already in use!", HttpStatus.BAD_REQUEST);
         }
 
-        if(!signUpBody.getPassword().matches("(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$")) {
+        if (!signUpBody.getPassword().matches("(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$")) {
             return new ResponseEntity<>("Wrong password format!", HttpStatus.BAD_REQUEST);
         }
 
@@ -70,9 +79,23 @@ public class AuthService {
 
         userEntity.setRoles(Collections.singleton(roleEntity));
 
+        File defaultSkin = new File("resources/skins/default.png");
+        File defaultPhoto = new File("resources/photo/default.png");
+
+        BufferedImage imagePhoto = ImageIO.read(defaultPhoto);
+        File photo = new File("resources/photo/" + signUpBody.getUsername() + ".png");
+        if (photo.createNewFile()) {
+            ImageIO.write(imagePhoto, "png", photo);
+        }
+
+        BufferedImage imageSkin = ImageIO.read(defaultSkin);
+        File skin = new File("resources/skins/" + signUpBody.getUsername() + ".png");
+        if (skin.createNewFile()) {
+            ImageIO.write(imageSkin, "png", skin);
+        }
+
         userRepository.save(userEntity);
         return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
-
     }
 
     public ResponseEntity<?> auth(SignInBody signInBody) {

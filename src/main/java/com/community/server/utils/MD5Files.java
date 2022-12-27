@@ -5,6 +5,7 @@ import com.community.server.dto.FileDto;
 import com.community.server.dto.ServerDto;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import lombok.SneakyThrows;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -51,6 +52,7 @@ public class MD5Files {
         }
     }
 
+    @SneakyThrows
     public void input(String launcher) {
 
         File folder = new File("indexes");
@@ -64,6 +66,9 @@ public class MD5Files {
         clientDto.setCountFolders(folders.size());
 
         File file = new File("indexes/" + launcher + ".json");
+        if(!file.isFile()){
+            file.createNewFile();
+        }
         WriteFile writeFile = new WriteFile(file);
         writeFile.write(new Gson().toJson(clientDto));
 

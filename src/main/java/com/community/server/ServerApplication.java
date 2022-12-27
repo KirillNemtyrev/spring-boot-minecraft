@@ -46,7 +46,7 @@ public class ServerApplication {
 		ServerDto[] serverDtos = md5Files.getServers();
 		for (ServerDto serverDto : serverDtos) {
 			logger.info("Indexing client: " + serverDto.getClient());
-			md5Files.generate("client/" + serverDto.getClient());
+			md5Files.generate("launcher/client/" + serverDto.getClient());
 			md5Files.input(serverDto.getClient());
 		}
 		Date end = new Date();

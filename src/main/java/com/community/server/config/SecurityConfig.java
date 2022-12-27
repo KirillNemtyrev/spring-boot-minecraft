@@ -81,7 +81,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/ws/**")
+                .antMatchers("/api/minecraft/**")
+                .permitAll()
+                .antMatchers("/")
+                .permitAll()
+                .antMatchers("/sessionserver/**")
                 .permitAll()
                 .antMatchers("/api/auth/**")
                 .permitAll()
