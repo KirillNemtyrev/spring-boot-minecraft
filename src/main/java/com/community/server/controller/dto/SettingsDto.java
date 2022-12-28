@@ -1,4 +1,4 @@
-package com.community.server.dto;
+package com.community.server.controller.dto;
 
 import lombok.Data;
 

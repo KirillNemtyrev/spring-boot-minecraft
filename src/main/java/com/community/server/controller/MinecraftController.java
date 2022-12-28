@@ -1,8 +1,8 @@
 package com.community.server.controller;
 
-import com.community.server.dto.minecraft.JoinServerRequest;
-import com.community.server.dto.minecraft.MinecraftServerMeta;
-import com.community.server.dto.minecraft.MinecraftUser;
+import com.community.server.controller.dto.minecraft.JoinServerRequest;
+import com.community.server.controller.dto.minecraft.MinecraftServerMeta;
+import com.community.server.controller.dto.minecraft.MinecraftUser;
 import com.community.server.utils.KeyUtils;
 import com.google.common.collect.Lists;
 import org.springframework.http.ResponseEntity;

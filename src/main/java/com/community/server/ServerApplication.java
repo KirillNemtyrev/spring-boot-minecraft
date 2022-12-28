@@ -1,7 +1,6 @@
 package com.community.server;
 
-import com.community.server.dto.ServerDto;
-import com.community.server.service.LauncherService;
+import com.community.server.controller.dto.ServerDto;
 import com.community.server.utils.MD5Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.util.unit.DataSize;
 
 import javax.servlet.MultipartConfigElement;
-import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;

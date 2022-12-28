@@ -1,14 +1,13 @@
 package com.community.server.controller;
 
-import com.community.server.dto.ClientDto;
-import com.community.server.dto.SettingsDto;
+import com.community.server.controller.dto.ClientDto;
+import com.community.server.controller.dto.SettingsDto;
 import com.community.server.service.LauncherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/launcher")

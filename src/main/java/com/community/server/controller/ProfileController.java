@@ -1,6 +1,6 @@
 package com.community.server.controller;
 
-import com.community.server.dto.ProfileDto;
+import com.community.server.controller.dto.ProfileDto;
 import com.community.server.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
