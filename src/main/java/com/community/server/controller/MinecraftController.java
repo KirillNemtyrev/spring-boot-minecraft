@@ -2,23 +2,31 @@ package com.community.server.controller;
 
 import com.community.server.dto.minecraft.JoinServerRequest;
 import com.community.server.dto.minecraft.MinecraftServerMeta;
-import com.community.server.dto.minecraft.MinecraftUser;
+import com.community.server.service.AuthService;
 import com.community.server.utils.KeyUtils;
 import com.google.common.collect.Lists;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.community.server.utils.KeyUtils.getSignaturePublicKey;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
+@RequiredArgsConstructor
 public class MinecraftController {
+
+    private final AuthService authService;
 
     @GetMapping("/")
     public MinecraftServerMeta root() {
@@ -49,15 +57,12 @@ public class MinecraftController {
     @PostMapping("/api/minecraft/session/join")
     @ResponseStatus(NO_CONTENT)
     public void joinServer(@RequestBody @Valid JoinServerRequest req) {
-
+        authService.joinServer(req);
     }
 
     @GetMapping("/sessionserver/session/minecraft/hasJoined")
     public ResponseEntity<?> hasJoinedServer(@RequestParam String serverId, @RequestParam String username) {
-        MinecraftUser yggdrasilCharacter = new MinecraftUser();
-        yggdrasilCharacter.setName("Name");
-        yggdrasilCharacter.setUuid(UUID.randomUUID());
-        return ok(yggdrasilCharacter.toCompleteResponse(true));
+        return ok(authService.hasJoinedServer(username).toCompleteResponse(true));
     }
 
 }

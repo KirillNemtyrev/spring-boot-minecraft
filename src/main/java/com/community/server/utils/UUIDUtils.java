@@ -9,10 +9,6 @@ public final class UUIDUtils {
 		return uuid.toString().replace("-", "");
 	}
 
-	public static String unsign(String uuid) {
-		return uuid.replace("-", "");
-	}
-
 	public static UUID toUUID(String uuid) {
 		switch (uuid.length()) {
 			case 36:
@@ -24,9 +20,5 @@ public final class UUIDUtils {
 			default:
 				throw new IllegalArgumentException("Invalid UUID: " + uuid);
 		}
-	}
-
-	public static String randomUnsignedUUID() {
-		return unsign(UUID.randomUUID());
 	}
 }

@@ -2,6 +2,8 @@ package com.community.server.service;
 
 import com.community.server.body.SignInBody;
 import com.community.server.body.SignUpBody;
+import com.community.server.dto.minecraft.JoinServerRequest;
+import com.community.server.dto.minecraft.MinecraftUser;
 import com.community.server.entity.RoleEntity;
 import com.community.server.entity.RoleNameEntity;
 import com.community.server.entity.UserEntity;
@@ -10,10 +12,10 @@ import com.community.server.repository.RoleRepository;
 import com.community.server.repository.UserRepository;
 import com.community.server.security.JwtAuthenticationResponse;
 import com.community.server.security.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,27 +28,22 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
-    @Autowired
+    private final Map<String, Long> joinRequests = Collections.synchronizedMap(new HashMap<>());
+
     private AuthenticationManager authenticationManager;
-
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
     private RoleRepository roleRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private JwtTokenProvider tokenProvider;
 
     @SneakyThrows
@@ -100,7 +97,7 @@ public class AuthService {
 
     public ResponseEntity<?> auth(SignInBody signInBody) {
 
-        if(signInBody.getUsername() == null || signInBody.getPassword() == null){
+        if (signInBody.getUsername() == null || signInBody.getPassword() == null) {
             return new ResponseEntity<>("Auth options are not specified.", HttpStatus.BAD_GATEWAY);
         }
 
@@ -113,4 +110,30 @@ public class AuthService {
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
+    public void joinServer(JoinServerRequest req) {
+        if (!tokenProvider.validateToken(req.accessToken)) {
+            throw new IllegalArgumentException("Access token not valid!");
+        }
+
+        UserEntity user = userRepository.findById(
+                tokenProvider.getUserIdFromJWT(req.accessToken)
+        ).orElseThrow(() -> new IllegalArgumentException("User not found!"));
+
+        joinRequests.put(user.getUsername(), user.getId());
+    }
+
+    public MinecraftUser hasJoinedServer(String username) {
+        Long userId = joinRequests.remove(username);
+
+        if (userId == null) {
+            throw new IllegalArgumentException("Not found joined user: " + username);
+        }
+
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found!"));
+
+        return MinecraftUser.builder()
+                .uuid(user.getUuid())
+                .name(user.getUsername())
+                .build();
+    }
 }

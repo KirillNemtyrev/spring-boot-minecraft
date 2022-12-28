@@ -1,24 +1,33 @@
 package com.community.server.dto.minecraft;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.util.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import static com.community.server.utils.Base64Utils.base64Encoded;
 import static com.community.server.utils.KeyUtils.sign;
-import static com.community.server.utils.UUIDUtils.unsign;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class MinecraftUser {
-    private UUID uuid = UUID.randomUUID();
+    private String uuid;
     private String name;
     private ModelType model = ModelType.STEVE;
     private Map<TextureType, Texture> textures = new ConcurrentSkipListMap<>();
@@ -46,7 +55,7 @@ public class MinecraftUser {
         properties.add(
                 Pair.of("textures", base64Encoded(
                         Pair.of("timestamp", System.currentTimeMillis()),
-                        Pair.of("profileId", unsign(uuid)),
+                        Pair.of("profileId", uuid),
                         Pair.of("profileName", name),
                         Pair.of("textures", texturesResponse)
                 ))
@@ -63,7 +72,7 @@ public class MinecraftUser {
         }
 
         HashMap<String, Object> map = new HashMap<>();
-        map.put("id", unsign(uuid));
+        map.put("id", uuid);
         map.put("name", name);
         map.put("properties", mapProperties(signed, properties));
         return map;
