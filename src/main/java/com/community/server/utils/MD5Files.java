@@ -1,8 +1,8 @@
 package com.community.server.utils;
 
-import com.community.server.controller.dto.ClientDto;
-import com.community.server.controller.dto.FileDto;
-import com.community.server.controller.dto.ServerDto;
+import com.community.server.dto.ClientDto;
+import com.community.server.dto.FileDto;
+import com.community.server.dto.ServerDto;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.SneakyThrows;

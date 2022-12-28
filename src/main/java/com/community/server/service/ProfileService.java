@@ -1,6 +1,6 @@
 package com.community.server.service;
 
-import com.community.server.controller.dto.ProfileDto;
+import com.community.server.dto.ProfileDto;
 import com.community.server.entity.UserEntity;
 import com.community.server.repository.UserRepository;
 import com.community.server.security.JwtAuthenticationFilter;

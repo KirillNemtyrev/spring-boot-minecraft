@@ -1,6 +1,6 @@
 package com.community.server;
 
-import com.community.server.controller.dto.ServerDto;
+import com.community.server.dto.ServerDto;
 import com.community.server.utils.MD5Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

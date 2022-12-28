@@ -1,7 +1,7 @@
 package com.community.server.service;
 
-import com.community.server.controller.dto.ClientDto;
-import com.community.server.controller.dto.SettingsDto;
+import com.community.server.dto.ClientDto;
+import com.community.server.dto.SettingsDto;
 import com.community.server.entity.UserEntity;
 import com.community.server.repository.UserRepository;
 import com.community.server.security.JwtAuthenticationFilter;
