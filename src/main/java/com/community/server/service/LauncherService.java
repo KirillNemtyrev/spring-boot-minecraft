@@ -10,8 +10,6 @@ import com.community.server.utils.ReadFile;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.Gson;
 import lombok.SneakyThrows;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -24,8 +22,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 @Service
 public class LauncherService {
@@ -68,8 +64,8 @@ public class LauncherService {
     @SneakyThrows
     public void getFile(String path, HttpServletResponse httpServletResponse){
 
-        path = URLDecoder.decode(path, StandardCharsets.UTF_8);
-        File file = new File("launcher\\" + path);
+        path = URLDecoder.decode(path);
+        File file = new File("./launcher/" + path);
 
         MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
         httpServletResponse.setContentType(mimetypesFileTypeMap.getContentType(file.getAbsoluteFile()));
