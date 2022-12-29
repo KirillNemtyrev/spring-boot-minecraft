@@ -40,11 +40,11 @@ public class AuthService {
 
     private final Map<String, Long> joinRequests = Collections.synchronizedMap(new HashMap<>());
 
-    private AuthenticationManager authenticationManager;
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
-    private JwtTokenProvider tokenProvider;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider tokenProvider;
 
     @SneakyThrows
     public ResponseEntity<?> create(SignUpBody signUpBody) {
