@@ -30,6 +30,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 @Service
@@ -134,6 +135,8 @@ public class AuthService {
         return MinecraftUser.builder()
                 .uuid(user.getUuid())
                 .name(user.getUsername())
+                .textures(new HashMap<>())
+                .uploadableTextures(new HashSet<>())
                 .build();
     }
 }

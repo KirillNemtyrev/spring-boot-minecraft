@@ -7,14 +7,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 
 import static com.community.server.utils.Base64Utils.base64Encoded;
 import static com.community.server.utils.KeyUtils.sign;
@@ -30,9 +27,8 @@ public class MinecraftUser {
     private String uuid;
     private String name;
     private ModelType model = ModelType.STEVE;
-    private Map<TextureType, Texture> textures = new ConcurrentSkipListMap<>();
-    private Set<TextureType> uploadableTextures = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    private MinecraftUser owner;
+    private Map<TextureType, Texture> textures;
+    private Set<TextureType> uploadableTextures;
 
     @SuppressWarnings("unchecked")
     public Map<String, Object> toCompleteResponse(boolean signed) {
