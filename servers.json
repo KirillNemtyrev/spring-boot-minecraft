@@ -1,14 +1,41 @@
 [
   {
-    "ip": "21321321",
-    "title": "Такой-то",
-    "icon": "Hitech1122.png",
+    "ip": "localhost",
+    "port": 25565,
+    "title": "HiTech",
+    "icon": "1.png",
     "version": "1.12.2",
-    "client": "Minecraft_1.12.2_Forge",
+    "client": "hitech",
     "pvp": "Включено",
     "size": "10000x10000",
-    "start": "17 сентября 2022 г.",
-    "wipe": "18 сентября 2022 г.",
-    "wipeOther": "19 сентября 2022 г."
+    "start": "Нет данных",
+    "wipe": "Нет данных",
+    "wipeOther": "Нет данных"
+  },
+  {
+    "ip": "localhost",
+    "port": 25564,
+    "title": "Magic",
+    "icon": "2.png",
+    "version": "1.12.2",
+    "client": "magic",
+    "pvp": "Включено",
+    "size": "10000x10000",
+    "start": "Нет данных",
+    "wipe": "Нет данных",
+    "wipeOther": "Нет данных"
+  },
+  {
+    "ip": "localhost",
+    "port": 25563,
+    "title": "TechoMagic",
+    "icon": "3.png",
+    "version": "1.12.2",
+    "client": "technomagic",
+    "pvp": "Включено",
+    "size": "10000x10000",
+    "start": "Нет данных",
+    "wipe": "Нет данных",
+    "wipeOther": "Нет данных"
   }
 ]

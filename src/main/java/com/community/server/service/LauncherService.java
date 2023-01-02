@@ -65,7 +65,7 @@ public class LauncherService {
     public void getFile(String path, HttpServletResponse httpServletResponse){
 
         path = URLDecoder.decode(path);
-        File file = new File("./launcher/" + path);
+        File file = new File("./" + path);
 
         MimetypesFileTypeMap mimetypesFileTypeMap = new MimetypesFileTypeMap();
         httpServletResponse.setContentType(mimetypesFileTypeMap.getContentType(file.getAbsoluteFile()));

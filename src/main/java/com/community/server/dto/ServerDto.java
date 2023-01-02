@@ -15,6 +15,8 @@ public class ServerDto {
     private String wipe;
     private String wipeOther;
 
+
+    private int port;
     private int online;
     private int players;
 }

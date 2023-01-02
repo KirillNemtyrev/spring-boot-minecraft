@@ -16,4 +16,6 @@ public class SettingsDto {
     private String tweak;
     private String fml;
     private String type;
+    private String ip;
+    private String port;
 }

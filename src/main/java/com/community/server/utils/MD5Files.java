@@ -3,9 +3,13 @@ package com.community.server.utils;
 import com.community.server.dto.ClientDto;
 import com.community.server.dto.FileDto;
 import com.community.server.dto.ServerDto;
+import com.community.server.query.MCQuery;
+import com.community.server.query.QueryRequest;
+import com.community.server.query.QueryResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.SneakyThrows;
+import org.apache.catalina.Server;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +28,19 @@ public class MD5Files {
         File file = new File("servers.json");
         ReadFile readFile = new ReadFile(file);
 
-        return new Gson().fromJson(readFile.get(), new TypeToken<ServerDto[]>() {}.getType());
+        ServerDto[] servers = new Gson().fromJson(readFile.get(), new TypeToken<ServerDto[]>() {}.getType());
+        for (int count = 0; count < servers.length; count++) {
+            MCQuery mcQuery = new MCQuery(servers[count].getIp(), servers[count].getPort());
+            QueryResponse queryResponse = mcQuery.basicStat();
+            if (queryResponse == null) {
+                continue;
+            }
+
+            servers[count].setOnline(queryResponse.getOnlinePlayers());
+            servers[count].setPlayers(queryResponse.getMaxPlayers());
+        }
+
+        return servers;
     }
 
     public void generate(String path) throws IOException, NoSuchAlgorithmException {
@@ -55,8 +71,10 @@ public class MD5Files {
     @SneakyThrows
     public void input(String launcher) {
 
-        File folder = new File("indexes");
-        folder.mkdir();
+        File folder = new File("launcher\\indexes");
+        if(!folder.isDirectory() && !folder.mkdir()){
+            return;
+        }
         folders.sort(Comparator.comparingInt(String::length));
 
         ClientDto clientDto = new ClientDto();
@@ -65,9 +83,9 @@ public class MD5Files {
         clientDto.setCountFiles(files.size());
         clientDto.setCountFolders(folders.size());
 
-        File file = new File("indexes/" + launcher + ".json");
-        if(!file.isFile()){
-            file.createNewFile();
+        File file = new File("launcher\\indexes\\" + launcher + ".json");
+        if(!file.isFile() && !file.createNewFile()){
+            return;
         }
         WriteFile writeFile = new WriteFile(file);
         writeFile.write(new Gson().toJson(clientDto));
