@@ -12,7 +12,7 @@ import java.util.Base64;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class KeyUtils {
-	private static KeyPair keyPair = KeyUtils.generateKey();
+	private static final KeyPair keyPair = KeyUtils.generateKey();
 
 	private KeyUtils() {}
 

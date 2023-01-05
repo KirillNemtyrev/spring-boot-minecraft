@@ -1,41 +1,54 @@
 [
   {
+    "ip": "185.221.153.142",
+    "port": 25565,
+    "title": "TechoMagic + Хуйня всякая",
+    "icon": "server.png",
+    "version": "1.12.2",
+    "client": "nikita",
+    "pvp": "Включено",
+    "size": "10000x10000",
+    "start": "Нет данных",
+    "wipe": "Нет данных",
+    "mark": "new"
+  },
+  {
     "ip": "localhost",
     "port": 25565,
     "title": "HiTech",
-    "icon": "1.png",
+    "icon": "server.png",
     "version": "1.12.2",
     "client": "hitech",
     "pvp": "Включено",
     "size": "10000x10000",
     "start": "Нет данных",
     "wipe": "Нет данных",
-    "wipeOther": "Нет данных"
+    "mark": "obt"
   },
   {
     "ip": "localhost",
     "port": 25564,
     "title": "Magic",
-    "icon": "2.png",
+    "icon": "server.png",
     "version": "1.12.2",
     "client": "magic",
     "pvp": "Включено",
     "size": "10000x10000",
     "start": "Нет данных",
     "wipe": "Нет данных",
-    "wipeOther": "Нет данных"
+    "mark": "test"
   },
   {
     "ip": "localhost",
     "port": 25563,
     "title": "TechoMagic",
-    "icon": "3.png",
+    "icon": "server.png",
     "version": "1.12.2",
     "client": "technomagic",
     "pvp": "Включено",
     "size": "10000x10000",
     "start": "Нет данных",
     "wipe": "Нет данных",
-    "wipeOther": "Нет данных"
+    "mark": "wipe"
   }
 ]

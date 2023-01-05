@@ -112,7 +112,10 @@ public class AuthService {
     }
 
     public void joinServer(JoinServerRequest req) {
+
+        logger.info("Join server: " + req);
         if (!tokenProvider.validateToken(req.accessToken)) {
+            logger.info("Join server: Access token not valid!");
             throw new IllegalArgumentException("Access token not valid!");
         }
 
@@ -121,17 +124,22 @@ public class AuthService {
         ).orElseThrow(() -> new IllegalArgumentException("User not found!"));
 
         joinRequests.put(user.getUsername(), user.getId());
+        logger.info("Join success: " + joinRequests);
     }
 
     public MinecraftUser hasJoinedServer(String username) {
+
+        logger.info("hasJoinedServer: " + username);
         Long userId = joinRequests.remove(username);
 
         if (userId == null) {
+            logger.info("hasJoinedServer: " + username + " not found!");
             throw new IllegalArgumentException("Not found joined user: " + username);
         }
 
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found!"));
 
+        logger.info("hasJoinedServer: " + username + " success!");
         return MinecraftUser.builder()
                 .uuid(user.getUuid())
                 .name(user.getUsername())

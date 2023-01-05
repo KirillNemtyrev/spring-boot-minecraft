@@ -3,75 +3,58 @@ package com.community.server.utils;
 import com.community.server.dto.ClientDto;
 import com.community.server.dto.FileDto;
 import com.community.server.dto.ServerDto;
-import com.community.server.query.MCQuery;
-import com.community.server.query.QueryRequest;
-import com.community.server.query.QueryResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.SneakyThrows;
-import org.apache.catalina.Server;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 public class MD5Files {
 
-    private List<FileDto> files = new ArrayList<>();
-    private List<String> folders = new ArrayList<>();
+    private final List<FileDto> files = new ArrayList<>();
+    private final List<String> folders = new ArrayList<>();
 
     public ServerDto[] getServers() {
 
         File file = new File("servers.json");
         ReadFile readFile = new ReadFile(file);
-
-        ServerDto[] servers = new Gson().fromJson(readFile.get(), new TypeToken<ServerDto[]>() {}.getType());
-        for (int count = 0; count < servers.length; count++) {
-            MCQuery mcQuery = new MCQuery(servers[count].getIp(), servers[count].getPort());
-            QueryResponse queryResponse = mcQuery.basicStat();
-            if (queryResponse == null) {
-                continue;
-            }
-
-            servers[count].setOnline(queryResponse.getOnlinePlayers());
-            servers[count].setPlayers(queryResponse.getMaxPlayers());
-        }
-
-        return servers;
+        return new Gson().fromJson(readFile.get(), new TypeToken<ServerDto[]>() {}.getType());
     }
 
     public void generate(String path) throws IOException, NoSuchAlgorithmException {
 
-        try {
-            File file = new File(path);
-            for (File item : file.listFiles()) {
+        File file = new File(path);
+        for (File item : Objects.requireNonNull(file.listFiles())) {
 
-                if (item.isDirectory()) {
+            if (item.isDirectory()) {
 
-                    generate(item.getPath());
-                    folders.add(item.getPath());
+                generate(item.getPath());
+                folders.add(item.getPath());
 
-                } else {
+            } else {
 
-                    FileDto fileDto = new FileDto();
-                    fileDto.setPath(item.getPath());
-                    fileDto.setSize(item.length());
-                    fileDto.setMd5(getHash(item.getAbsolutePath()));
+                FileDto fileDto = new FileDto();
+                fileDto.setPath(item.getPath());
+                fileDto.setSize(item.length());
+                fileDto.setMd5(getHash(item.getAbsolutePath()));
 
-                    files.add(fileDto);
-                }
+                files.add(fileDto);
             }
-        } catch (IOException | NoSuchAlgorithmException e){
         }
     }
 
     @SneakyThrows
     public void input(String launcher) {
 
-        File folder = new File("launcher\\indexes");
+        File folder = new File("launcher/indexes");
         if(!folder.isDirectory() && !folder.mkdir()){
             return;
         }
@@ -80,10 +63,8 @@ public class MD5Files {
         ClientDto clientDto = new ClientDto();
         clientDto.setFiles(files);
         clientDto.setFolders(folders);
-        clientDto.setCountFiles(files.size());
-        clientDto.setCountFolders(folders.size());
 
-        File file = new File("launcher\\indexes\\" + launcher + ".json");
+        File file = new File("launcher/indexes/" + launcher + ".json");
         if(!file.isFile() && !file.createNewFile()){
             return;
         }

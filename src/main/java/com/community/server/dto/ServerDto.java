@@ -1,5 +1,7 @@
 package com.community.server.dto;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
 @Data
@@ -13,10 +15,6 @@ public class ServerDto {
     private String size;
     private String start;
     private String wipe;
-    private String wipeOther;
-
-
+    private String mark;
     private int port;
-    private int online;
-    private int players;
 }
