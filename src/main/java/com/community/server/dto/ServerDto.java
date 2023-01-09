@@ -1,8 +1,8 @@
 package com.community.server.dto;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import lombok.Data;
+
+import java.util.ArrayList;
 
 @Data
 public class ServerDto {
@@ -17,4 +17,5 @@ public class ServerDto {
     private String wipe;
     private String mark;
     private int port;
+    private ArrayList<String> params;
 }
