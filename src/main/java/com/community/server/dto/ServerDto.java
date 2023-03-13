@@ -17,5 +17,6 @@ public class ServerDto {
     private String wipe;
     private String mark;
     private int port;
+    private int online;
     private ArrayList<String> params;
 }

@@ -49,6 +49,12 @@ public class ServerApplication {
 		}
 		Date end = new Date();
 		logger.info("Completed indexing minecraft clients in " + (end.getTime() - start.getTime()) + " ms.");
+
+		start = new Date();
+		md5Files.generate();
+		md5Files.inputLoader();
+		end = new Date();
+		logger.info("Completed indexing loader in " + (end.getTime() - start.getTime()) + " ms.");
 	}
 
 }

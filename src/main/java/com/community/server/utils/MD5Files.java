@@ -3,6 +3,7 @@ package com.community.server.utils;
 import com.community.server.dto.ClientDto;
 import com.community.server.dto.FileDto;
 import com.community.server.dto.ServerDto;
+import com.community.server.query.MCQuery;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.SneakyThrows;
@@ -26,7 +27,17 @@ public class MD5Files {
 
         File file = new File("servers.json");
         ReadFile readFile = new ReadFile(file);
-        return new Gson().fromJson(readFile.get(), new TypeToken<ServerDto[]>() {}.getType());
+        ServerDto[] serverDto = new Gson().fromJson(readFile.get(), new TypeToken<ServerDto[]>() {}.getType());
+        for (int count = 0; count < serverDto.length; count++){
+            MCQuery mcQuery = new MCQuery(serverDto[count].getIp(), serverDto[count].getPort());
+            serverDto[count].setOnline(mcQuery.fullStat().getOnlinePlayers());
+            mcQuery.close();
+        }
+        return serverDto;
+    }
+
+    public void generate() throws IOException, NoSuchAlgorithmException {
+        generate("loader");
     }
 
     public void generate(String path) throws IOException, NoSuchAlgorithmException {
@@ -74,6 +85,25 @@ public class MD5Files {
         folders.clear();
         files.clear();
 
+    }
+
+    @SneakyThrows
+    public void inputLoader() {
+        folders.sort(Comparator.comparingInt(String::length));
+
+        ClientDto clientDto = new ClientDto();
+        clientDto.setFiles(files);
+        clientDto.setFolders(folders);
+
+        File file = new File("loader.json");
+        if(!file.isFile() && !file.createNewFile()){
+            return;
+        }
+        WriteFile writeFile = new WriteFile(file);
+        writeFile.write(new Gson().toJson(clientDto));
+
+        folders.clear();
+        files.clear();
     }
 
     public String getHash(String fileName) throws IOException, NoSuchAlgorithmException

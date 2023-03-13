@@ -11,7 +11,6 @@ import com.google.common.net.HttpHeaders;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -21,21 +20,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.net.URLDecoder;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 @Service
 public class LauncherService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    public LauncherService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider, JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
 
     public ClientDto getLauncher(String launcher) {
 
@@ -101,7 +102,7 @@ public class LauncherService {
         httpServletResponse.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
         httpServletResponse.setContentLength((int) file.length());
 
-        BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+        BufferedInputStream inStream = new BufferedInputStream(Files.newInputStream(file.toPath()));
         BufferedOutputStream outStream = new BufferedOutputStream(httpServletResponse.getOutputStream());
 
         byte[] buffer = new byte[1024];
