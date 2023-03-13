@@ -1,1 +1,1 @@
-java $JAVA_OPTS -jar target/server-0.0.1-SNAPSHOT.jar -Xmx300m
+web: java -jar target/server-0.0.1-SNAPSHOT.jar
