@@ -95,6 +95,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .permitAll()
                 .antMatchers("/resources/**")
                 .permitAll()
+                .antMatchers("/textures/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 

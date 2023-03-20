@@ -2,13 +2,14 @@ package com.community.server.service;
 
 import com.community.server.body.SignInBody;
 import com.community.server.body.SignUpBody;
-import com.community.server.dto.minecraft.JoinServerRequest;
-import com.community.server.dto.minecraft.MinecraftUser;
+import com.community.server.dto.minecraft.*;
 import com.community.server.entity.RoleEntity;
 import com.community.server.entity.RoleNameEntity;
+import com.community.server.entity.SkinEntity;
 import com.community.server.entity.UserEntity;
 import com.community.server.exception.AppException;
 import com.community.server.repository.RoleRepository;
+import com.community.server.repository.SkinsRepository;
 import com.community.server.repository.UserRepository;
 import com.community.server.security.JwtAuthenticationResponse;
 import com.community.server.security.JwtTokenProvider;
@@ -43,6 +44,7 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final SkinsRepository skinsRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
@@ -138,12 +140,17 @@ public class AuthService {
         }
 
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found!"));
-
         logger.info("hasJoinedServer: " + username + " success!");
+
+        SkinEntity skinEntity = skinsRepository.findByHash(user.getUuid()).orElseThrow(() -> new IllegalArgumentException("Skin not found!"));
+        Map<TextureType, Texture> map = new HashMap<>();
+        map.put(skinEntity.getTextureType(), new Texture(skinEntity.getHash(), skinEntity.getData(), skinEntity.getUrl()));
+
         return MinecraftUser.builder()
+                .model(ModelType.CUSTOM)
                 .uuid(user.getUuid())
                 .name(user.getUsername())
-                .textures(new HashMap<>())
+                .textures(map)
                 .uploadableTextures(new HashSet<>())
                 .build();
     }

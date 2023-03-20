@@ -2,7 +2,8 @@ package com.community.server.dto.minecraft;
 
 public enum ModelType {
     STEVE("default"),
-    ALEX("slim");
+    ALEX("slim"),
+    CUSTOM("custom");
 
     private String modelName;
 

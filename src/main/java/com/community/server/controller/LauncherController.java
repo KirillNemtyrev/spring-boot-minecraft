@@ -2,7 +2,6 @@ package com.community.server.controller;
 
 import com.community.server.dto.ClientDto;
 import com.community.server.service.LauncherService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,8 +12,11 @@ import java.util.ArrayList;
 @RequestMapping("/api/launcher")
 public class LauncherController {
 
-    @Autowired
-    private LauncherService launcherService;
+    private final LauncherService launcherService;
+
+    public LauncherController(LauncherService launcherService) {
+        this.launcherService = launcherService;
+    }
 
     @GetMapping("/info/{name}")
     public ClientDto getClient(@PathVariable String name) {
@@ -22,8 +24,8 @@ public class LauncherController {
     }
 
     @GetMapping("/info/settings/{name}")
-    public ArrayList<String> getClientSettings(@PathVariable String name, @RequestParam boolean connect, @RequestParam boolean fullscreen, HttpServletRequest httpServletRequest) {
-        return launcherService.getLauncherSettings(name, connect, fullscreen, httpServletRequest);
+    public ArrayList<String> getClientSettings(@PathVariable String name, @RequestParam boolean fullscreen, @RequestParam boolean connect, HttpServletRequest httpServletRequest) {
+        return launcherService.getLauncherSettings(name, fullscreen, connect, httpServletRequest);
     }
 
     @GetMapping

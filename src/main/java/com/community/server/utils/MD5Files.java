@@ -41,7 +41,6 @@ public class MD5Files {
     }
 
     public void generate(String path) throws IOException, NoSuchAlgorithmException {
-
         File file = new File(path);
         for (File item : Objects.requireNonNull(file.listFiles())) {
 

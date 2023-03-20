@@ -46,7 +46,7 @@ public class LauncherService {
 
     }
 
-    public ArrayList<String> getLauncherSettings(String launcher, boolean connect, boolean fullscreen, HttpServletRequest httpServletRequest) {
+    public ArrayList<String> getLauncherSettings(String launcher, boolean fullscreen, boolean connect, HttpServletRequest httpServletRequest) {
 
         String token = jwtAuthenticationFilter.getJwtFromRequest(httpServletRequest);
         Long user = jwtTokenProvider.getUserIdFromJWT(token);

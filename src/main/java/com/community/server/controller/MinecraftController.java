@@ -1,25 +1,26 @@
 package com.community.server.controller;
 
-import com.community.server.dto.minecraft.JoinServerRequest;
-import com.community.server.dto.minecraft.MinecraftServerMeta;
+import com.community.server.dto.minecraft.*;
+import com.community.server.repository.SkinsRepository;
 import com.community.server.service.AuthService;
 import com.community.server.utils.KeyUtils;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
+import lombok.var;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.community.server.utils.KeyUtils.getSignaturePublicKey;
+import static java.util.concurrent.TimeUnit.DAYS;
+import static org.springframework.http.CacheControl.maxAge;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -27,6 +28,7 @@ import static org.springframework.http.ResponseEntity.ok;
 public class MinecraftController {
 
     private final AuthService authService;
+    private final SkinsRepository skinsRepository;
 
     @GetMapping("/")
     public MinecraftServerMeta root() {
@@ -65,4 +67,15 @@ public class MinecraftController {
         return ok(authService.hasJoinedServer(username).toCompleteResponse(true));
     }
 
+    @GetMapping("/textures/{hash}")
+    public ResponseEntity<?> texture(@PathVariable String hash) {
+        System.out.println(hash);
+        return skinsRepository.findByHash(hash)
+                .map(texture -> ok()
+                        .contentType(IMAGE_PNG)
+                        .eTag(texture.getHash())
+                        .cacheControl(maxAge(30, DAYS).cachePublic())
+                        .body(texture.getData()))
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

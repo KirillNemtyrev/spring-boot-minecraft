@@ -18,11 +18,4 @@ public class Texture {
         this.data = requireNonNull(data);
         this.url = requireNonNull(url);
     }
-
-    private static void putInt(byte[] array, int offset, int x) {
-        array[offset + 0] = (byte) (x >> 24 & 0xff);
-        array[offset + 1] = (byte) (x >> 16 & 0xff);
-        array[offset + 2] = (byte) (x >> 8 & 0xff);
-        array[offset + 3] = (byte) (x >> 0 & 0xff);
-    }
 }

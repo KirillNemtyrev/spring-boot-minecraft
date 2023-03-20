@@ -1,10 +1,13 @@
 package com.community.server.service;
 
+import com.community.server.ServerApplication;
 import com.community.server.dto.ClientDto;
 import com.community.server.utils.ReadFile;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.Gson;
 import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.activation.MimetypesFileTypeMap;
