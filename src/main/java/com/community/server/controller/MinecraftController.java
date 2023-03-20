@@ -4,8 +4,8 @@ import com.community.server.dto.minecraft.JoinServerRequest;
 import com.community.server.dto.minecraft.MinecraftServerMeta;
 import com.community.server.dto.minecraft.TextureType;
 import com.community.server.entity.SkinEntity;
-import com.community.server.repository.SkinsRepository;
 import com.community.server.service.AuthService;
+import com.community.server.service.SkinService;
 import com.community.server.utils.KeyUtils;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.community.server.utils.KeyUtils.getSignaturePublicKey;
+import static java.util.concurrent.TimeUnit.DAYS;
+import static org.springframework.http.CacheControl.maxAge;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -31,7 +34,7 @@ import static org.springframework.http.ResponseEntity.ok;
 public class MinecraftController {
 
     private final AuthService authService;
-    private final SkinsRepository skinsRepository;
+    private final SkinService skinService;
 
     @GetMapping("/")
     public MinecraftServerMeta root() {
@@ -72,12 +75,16 @@ public class MinecraftController {
 
     @GetMapping("/textures/{userName}")
     public Map<TextureType, SkinEntity> texture(@PathVariable String userName) {
-        System.out.println(userName);
-        SkinEntity skinEntity = skinsRepository.findByHash(userName).orElseThrow(
-                () -> new IllegalArgumentException("Texture not found")
-        );
-        Map<TextureType, SkinEntity> map = new HashMap<>();
-        map.put(skinEntity.getTextureType(), skinEntity);
-        return map;
+        return skinService.getSkinByUsername(userName);
+    }
+
+    @GetMapping("/image/{hash}")
+    public ResponseEntity<byte[]> getTexture(@PathVariable String hash) {
+        return skinService.getDataByHash(hash)
+                .map(texture -> ok()
+                        .contentType(IMAGE_PNG)
+                        .cacheControl(maxAge(30, DAYS).cachePublic())
+                        .body(texture)
+                ).orElse(ResponseEntity.notFound().build());
     }
 }

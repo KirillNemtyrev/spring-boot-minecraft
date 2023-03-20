@@ -1,10 +1,5 @@
 package com.community.server.dto.minecraft;
 
-import java.awt.image.BufferedImage;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import static java.util.Objects.requireNonNull;
 
 public class Texture {

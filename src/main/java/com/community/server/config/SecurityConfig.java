@@ -4,7 +4,6 @@ import com.community.server.security.JwtAuthenticationEntryPoint;
 import com.community.server.security.JwtAuthenticationFilter;
 import com.community.server.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,13 +25,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
         jsr250Enabled = true,
         prePostEnabled = true
 )
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-    @Autowired
-    private UserService customUserDetailsService;
+    private static final String[] WHITE_LIST = new String[]{
+            "/",
+            "/api/minecraft/**",
+            "/sessionserver/**",
+            "/api/auth/**",
+            "/api/recovery/**",
+            "/api/loader/**",
+            "/resources/**",
+            "/textures/**",
+            "/image/**",
+    };
 
-    @Autowired
-    private JwtAuthenticationEntryPoint unauthorizedHandler;
+    private final UserService customUserDetailsService;
+
+    private final JwtAuthenticationEntryPoint unauthorizedHandler;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -71,31 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js")
-                .permitAll()
-                .antMatchers("/api/minecraft/**")
-                .permitAll()
-                .antMatchers("/")
-                .permitAll()
-                .antMatchers("/sessionserver/**")
-                .permitAll()
-                .antMatchers("/api/auth/**")
-                .permitAll()
-                .antMatchers("/api/recovery/**")
-                .permitAll()
-                .antMatchers("/api/loader/**")
-                .permitAll()
-                .antMatchers("/resources/**")
-                .permitAll()
-                .antMatchers("/textures/**")
+                .antMatchers(WHITE_LIST)
                 .permitAll()
                 .anyRequest()
                 .authenticated();
