@@ -2,6 +2,7 @@ package com.community.server.controller;
 
 import com.community.server.dto.minecraft.JoinServerRequest;
 import com.community.server.dto.minecraft.MinecraftServerMeta;
+import com.community.server.dto.minecraft.Texture;
 import com.community.server.dto.minecraft.TextureType;
 import com.community.server.entity.SkinEntity;
 import com.community.server.service.AuthService;
@@ -74,7 +75,7 @@ public class MinecraftController {
     }
 
     @GetMapping("/textures/{userName}")
-    public Map<TextureType, SkinEntity> texture(@PathVariable String userName) {
+    public Map<TextureType, Texture> texture(@PathVariable String userName) {
         return skinService.getSkinByUsername(userName);
     }
 

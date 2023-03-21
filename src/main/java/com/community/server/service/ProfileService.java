@@ -1,11 +1,16 @@
 package com.community.server.service;
 
 import com.community.server.dto.ProfileDto;
+import com.community.server.dto.minecraft.Texture;
+import com.community.server.dto.minecraft.TextureType;
+import com.community.server.entity.SkinEntity;
 import com.community.server.entity.UserEntity;
+import com.community.server.repository.SkinRepository;
 import com.community.server.repository.UserRepository;
 import com.community.server.security.JwtAuthenticationFilter;
 import com.community.server.security.JwtTokenProvider;
 import com.community.server.utils.MD5Files;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,22 +26,22 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.awt.Image.SCALE_DEFAULT;
 
 @Service
+@AllArgsConstructor
 public class ProfileService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfileService.class);
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserRepository userRepository;
+    private final SkinService skinService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public ProfileDto getProfile(HttpServletRequest httpServletRequest){
         Long user = jwtTokenProvider.getUserIdFromJWT(jwtAuthenticationFilter.getJwtFromRequest(httpServletRequest));
@@ -44,48 +49,12 @@ public class ProfileService {
         UserEntity userEntity = userRepository.findById(user).orElseThrow(
                 () -> new UsernameNotFoundException("User is not found!"));
 
-        MD5Files md5Files = new MD5Files();
-        return new ProfileDto(userEntity.getUsername(), userEntity.getName(), userEntity.getBalance(), md5Files.getServers());
-    }
+        Map<TextureType, Texture> skins = skinService.getSkinByUsername(userEntity.getUsername());
+        Map<TextureType, String> map = new HashMap<>();
 
-    @SneakyThrows
-    public Object updateSkin(HttpServletRequest httpServletRequest, MultipartFile multipartFile) {
-
-        Long user = jwtTokenProvider.getUserIdFromJWT(jwtAuthenticationFilter.getJwtFromRequest(httpServletRequest));
-
-        UserEntity userEntity = userRepository.findById(user).orElseThrow(
-                () -> new UsernameNotFoundException("User is not found!"));
-
-        if(multipartFile.isEmpty()){
-            return new ResponseEntity<>("File is empty!", HttpStatus.BAD_REQUEST);
+        for (Map.Entry<TextureType, Texture> entry : skins.entrySet()){
+            map.put(entry.getKey(), entry.getValue().hash);
         }
-
-        String suffix = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1);
-        if(suffix.equalsIgnoreCase("png")) {
-            return new ResponseEntity<>("The file is not a skin!", HttpStatus.BAD_REQUEST);
-        }
-
-        File skins = new File("resources/skins");
-        if (skins.mkdir()) logger.info("Folder with skins created!");
-
-        File photos = new File("resources/photo");
-        if (photos.mkdir()) logger.info("Folder with photos created!");
-
-        BufferedImage image = ImageIO.read((File) multipartFile);
-        BufferedImage bufferedImage = image.getSubimage(8, 8, 8, 8);
-
-        BufferedImage resizedImage = new BufferedImage(32, 32, SCALE_DEFAULT);
-        Graphics2D graphics = resizedImage.createGraphics();
-        graphics.drawImage(bufferedImage, 0, 0, 32, 32, null);
-
-        File photo = new File("resources/photo/" + userEntity.getUsername() + ".png");
-        ImageIO.write(resizedImage, "png", photo);
-
-        File skin = new File("resources/skins/" + userEntity.getUsername() + ".png");
-        if (skin.createNewFile()) logger.info("File with skin " + userEntity.getUsername() + " created!");
-        ImageIO.write(image, "png", skin);
-
-        return new ResponseEntity<>("Your skin updated!", HttpStatus.OK);
+        return new ProfileDto(userEntity.getUsername(), userEntity.getName(), userEntity.getBalance(), new MD5Files().getServers(), map);
     }
-
 }

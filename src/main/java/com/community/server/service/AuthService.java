@@ -149,16 +149,8 @@ public class AuthService {
                 .model(ModelType.CUSTOM)
                 .uuid(user.getUuid())
                 .name(user.getUsername())
-                .textures(toTextures(skinService.getSkinByUsername(username)))
+                .textures(skinService.getSkinByUsername(username))
                 .uploadableTextures(new HashSet<>())
                 .build();
-    }
-
-    private Map<TextureType, Texture> toTextures(Map<TextureType, SkinEntity> skins){
-        Map<TextureType, Texture> map = new HashMap<>();
-        for (SkinEntity skin : skins.values()) {
-            map.put(skin.getTextureType(), skin.toTexture());
-        }
-        return map;
     }
 }

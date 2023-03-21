@@ -1,16 +1,14 @@
 package com.community.server.controller;
 
 import com.community.server.dto.ProfileDto;
+import com.community.server.dto.TextureDto;
 import com.community.server.dto.minecraft.TextureType;
+import com.community.server.entity.SkinEntity;
 import com.community.server.service.ProfileService;
 import com.community.server.service.SkinService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +28,12 @@ public class ProfileController {
     }
 
     @PostMapping("/texture/{type}")
-    public void loadTextureImage(@RequestParam MultipartFile file, @PathVariable @NotNull TextureType type, HttpServletRequest httpServletRequest){
-        skinService.loadImage(file, type, httpServletRequest);
+    public TextureDto loadTextureImage(@RequestParam MultipartFile file, @PathVariable @NotNull TextureType type, HttpServletRequest httpServletRequest){
+        return skinService.loadImage(file, type, httpServletRequest);
+    }
+
+    @DeleteMapping("/cape")
+    public ResponseEntity<?> deleteCape(HttpServletRequest httpServletRequest){
+        return skinService.deleteCape(httpServletRequest);
     }
 }

@@ -25,7 +25,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Table(name = "skins")
 public class SkinEntity {
-    private static final String BASIC_URL = "localhost:8745/image/";
+    private static final String BASIC_URL = "http://localhost:8745/image/";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
